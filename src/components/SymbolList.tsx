@@ -2,6 +2,14 @@ import * as React from 'react';
 import axios from 'axios';
 import ListViewRenderPropGeneric from './ListViewRenderPropGeneric';
 import ISymbol from '../types/ISymbol';
+import ClipLoader from "react-spinners/ClipLoader";
+import { css } from '@emotion/react'
+
+const override = css`
+  display: block;
+  margin: 0 auto;
+  border-color: blue;
+`;
 
 export default function SymbolList() {
 
@@ -21,6 +29,9 @@ export default function SymbolList() {
         .then(response => {
           //data coming from api doesn't have a key attribute, which is required for ListViewRenderPropGeneric
           const dataWithKeys = response.data.map(symbol => {return {key: symbol.name, name: symbol.name, quoteAsset: symbol.quoteAsset} as ISymbol})
+
+
+
           setSetSymbols(dataWithKeys);
           setLoading(false);
         })
@@ -40,9 +51,10 @@ export default function SymbolList() {
     return (
         <div>
             <h2>Binance Symbols</h2>
-            <ListViewRenderPropGeneric
-                    items={symbols}
-                    renderer={(item) => <div>{item.name}</div>}
+            <ClipLoader loading={loading} css={override}  size={150} />
+            <ListViewRenderPropGeneric 
+              items={symbols}
+              renderer={(item) => <div>{item.name}</div>}
             /> 
         </div>
 

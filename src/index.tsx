@@ -3,8 +3,6 @@ import {render} from 'react-dom';
 import SymbolList from './components/SymbolList';
 import './index.css';
 import CSS from 'csstype';
-import axios from "axios";
-import ISymbol from './types/ISymbol';
 
 
 //TODO load bootstrap from CDN instead, see https://www.w3schools.com/bootstrap/bootstrap_get_started.asp
@@ -15,7 +13,6 @@ const divStyle: CSS.Properties = {
 }
 
 const rootElement = document.getElementById("root");
-
 
 function renderSymbolList(){
   render(
