@@ -12,7 +12,7 @@ interface PropsType<T> {
   }
 
   //TODO export default, extract interfaces to other files
-  export function ListViewRenderPropGeneric<T extends AbstractItem>(props: PropsType<T>) {
+  export default function ListViewRenderPropGeneric<T extends AbstractItem>(props: PropsType<T>) {
     return (
       <ListGroup>
         {props.items.map((item) => {
