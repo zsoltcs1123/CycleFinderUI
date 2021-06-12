@@ -21,6 +21,7 @@ export default function SymbolList() {
 
     React.useEffect(() => {
         axios
+        
         .get<ISymbol[]>("https://localhost:5001/api/CandleStick/GetSymbols", {
           headers: {
             "Content-Type": "application/json"
