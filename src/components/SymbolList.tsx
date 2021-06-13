@@ -20,7 +20,7 @@ export default function SymbolList() {
 
     const defaultSymbols:ISymbol[] = [];
 
-    const [symbols, setSetSymbols]: [ISymbol[], (symbols: ISymbol[]) => void] = React.useState(defaultSymbols);
+    const [symbols, setSymbols]: [ISymbol[], (symbols: ISymbol[]) => void] = React.useState(defaultSymbols);
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const [error, setError]: [string, (error: string) => void] = React.useState("");
 
@@ -36,9 +36,7 @@ export default function SymbolList() {
           //data coming from api doesn't have a key attribute, which is required for ListViewRenderPropGeneric
           const dataWithKeys = response.data.map(symbol => {return {key: symbol.name, name: symbol.name, quoteAsset: symbol.quoteAsset} as ISymbol})
 
-
-
-          setSetSymbols(dataWithKeys);
+          setSymbols(dataWithKeys);
           setLoading(false);
         })
         .catch(ex => {
