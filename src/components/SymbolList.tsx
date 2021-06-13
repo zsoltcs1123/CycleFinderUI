@@ -1,11 +1,16 @@
+// this comment tells babel to convert jsx to calls to a function called jsx instead of React.createElement
+/** @jsxRuntime classic */
+/** @jsx jsx */
+
 import * as React from 'react';
 import axios from 'axios';
 import ListViewRenderPropGeneric from './ListViewRenderPropGeneric';
 import ISymbol from '../types/ISymbol';
 import ClipLoader from "react-spinners/ClipLoader";
-import { css } from '@emotion/react'
+import { css, jsx } from '@emotion/react'
 
-const override = css`
+
+const override = css` 
   display: block;
   margin: 0 auto;
   border-color: blue;
