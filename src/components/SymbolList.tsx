@@ -10,15 +10,19 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'
 
 
+interface ISymbolListProps{
+  onSymbolClicked: (symbol: string) => void
+}
+
 const override = css` 
   display: block;
   margin: 0 auto;
   border-color: blue;
 `;
 
-export default function SymbolList() {
+const defaultSymbols:ISymbol[] = [];
 
-    const defaultSymbols:ISymbol[] = [];
+export default function SymbolList(props: ISymbolListProps) {
 
     const [symbols, setSymbols]: [ISymbol[], (symbols: ISymbol[]) => void] = React.useState(defaultSymbols);
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
@@ -59,6 +63,7 @@ export default function SymbolList() {
             <ListViewRenderPropGeneric 
               items={symbols}
               renderer={(item) => <div>{item.name}</div>}
+              onItemClicked = {props.onSymbolClicked}
             /> 
         </div>
 

@@ -10,11 +10,9 @@ import { css, jsx } from '@emotion/react'
 interface PropsType<T> {
     items: T[];
     renderer: (item: T) => React.ReactNode;
+    onItemClicked: (symbol: string) => void;
   }
 
-  function onItemClicked(key: string) {
-    alert('You clicked the ListGroupItem' + key);
-  }
 
   //TODO export default, extract interfaces to other files
   export default function ListViewRenderPropGeneric<T extends IAbstractItem>(props: PropsType<T>) {
@@ -26,7 +24,7 @@ interface PropsType<T> {
           -webkit-overflow-scrolling: touch;
       `}>
         {props.items.map((item) => {
-          return <ListGroup.Item key={item.key} action onClick={() => onItemClicked(item.key)}>{props.renderer(item)}</ListGroup.Item>;
+          return <ListGroup.Item key={item.key} action onClick={() => props.onItemClicked(item.key)}>{props.renderer(item)}</ListGroup.Item>;
         })}
       </ListGroup>
     );
