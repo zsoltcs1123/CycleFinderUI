@@ -10,7 +10,7 @@ import { css, jsx } from '@emotion/react'
 
 //TODO load bootstrap from CDN instead, see https://www.w3schools.com/bootstrap/bootstrap_get_started.asp
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ChartAndSymbolList from './components/ChartAndSymbolList';
+import ChartAndSymbolList from './views/ChartAndSymbolList';
 
 const rootElement = document.getElementById("root");
 

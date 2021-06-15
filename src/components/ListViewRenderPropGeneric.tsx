@@ -4,15 +4,18 @@
 
 import * as React from 'react';
 import ListGroup from 'react-bootstrap/ListGroup'
-import IAbstractItem from "../types/IAbstractItem"
 import { css, jsx } from '@emotion/react'
+
+export interface IAbstractItem {
+  key: string;
+}
+
 
 interface PropsType<T> {
     items: T[];
     renderer: (item: T) => React.ReactNode;
     onItemClicked: (symbol: string) => void;
   }
-
 
   //TODO export default, extract interfaces to other files
   export default function ListViewRenderPropGeneric<T extends IAbstractItem>(props: PropsType<T>) {

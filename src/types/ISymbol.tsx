@@ -1,6 +1,6 @@
-import AbstractItem from "./IAbstractItem"
+import {IAbstractItem} from "../components/ListViewRenderPropGeneric"
 
-export default interface ISymbol extends AbstractItem {
+export default interface ISymbol extends IAbstractItem {
     name: string;
     quoteAsset: string;
   }

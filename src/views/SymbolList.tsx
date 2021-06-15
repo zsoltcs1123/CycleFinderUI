@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import axios from 'axios';
-import ListViewRenderPropGeneric from './ListViewRenderPropGeneric';
+import ListViewRenderPropGeneric from '../components/ListViewRenderPropGeneric';
 import ISymbol from '../types/ISymbol';
 import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'

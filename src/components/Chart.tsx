@@ -3,7 +3,7 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import { createChart, BarData, IChartApi } from 'lightweight-charts';
+import { createChart, BarData } from 'lightweight-charts';
 import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'

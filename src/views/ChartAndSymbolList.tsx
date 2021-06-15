@@ -4,8 +4,9 @@
 
 import * as React from 'react';
 import SymbolList from './SymbolList';
-import Chart from './Chart';
+import Chart from '../components/Chart';
 import { css, jsx } from '@emotion/react'
+import AnalysisToolbox from './AnalysisToolbox';
 
 const defaultSymbol = "";
 
@@ -31,6 +32,9 @@ export default function ChartAndSymbolList(){
           `}>
             <SymbolList onSymbolClicked={onSymbolClicked}/>
           </div>
-          <Chart symbol={currentSymbol} />
+          <div>
+            <AnalysisToolbox />
+            <Chart symbol={currentSymbol} />
+          </div>
       </div>);
 }
