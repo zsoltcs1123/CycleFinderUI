@@ -41,11 +41,17 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
 
     const handleClose = () => {
         setShowParameters(false)
+        alert(JSON.stringify(currentParameters))
     };
 
     const handleShow = (fn: IAnalysisFunction) => {
         setCurrentParameters(fn.parameters)
         setShowParameters(true);
+    }
+
+    const onInput = (id: string, newValue: string) => {
+        const newParams = currentParameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
+        setCurrentParameters(newParams)
     }
 
     return (
@@ -72,7 +78,8 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
                                 <Form.Control
                                     type="text"
                                     placeholder={param.id} 
-                                    defaultValue={param.value} />
+                                    defaultValue={param.value}
+                                    onChange={e => onInput(param.id, e.target.value)} />
                             </Col>
                         </Form.Group>
                     })}
