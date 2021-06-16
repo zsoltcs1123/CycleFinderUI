@@ -3,7 +3,7 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import {render} from 'react-dom';
+import { render } from 'react-dom';
 import './index.css';
 import { css, jsx } from '@emotion/react'
 
@@ -11,18 +11,20 @@ import { css, jsx } from '@emotion/react'
 //TODO load bootstrap from CDN instead, see https://www.w3schools.com/bootstrap/bootstrap_get_started.asp
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ChartArea from './views/ChartArea';
+import ChartProvider from './context/ChartProvider';
 
 const rootElement = document.getElementById("root");
 
-function renderSymbolList(){
+function renderSymbolList() {
   render(
-    <div>
+    <ChartProvider>
       <ChartArea />
-    </div>, rootElement)
+    </ChartProvider>
+    , rootElement)
 }
 
 renderSymbolList();
 
-  
+
 
 

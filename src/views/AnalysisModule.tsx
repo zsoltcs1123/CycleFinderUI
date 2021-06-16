@@ -17,7 +17,8 @@ import { IAnalysisFunction } from '../types/IAnalysisFunction';
 
 interface IAnalysisModuleProps {
     name: string,
-    functions: IAnalysisFunction[]
+    functions: IAnalysisFunction[],
+    isEnabled: boolean
 }
 
 const defaultFunction: IAnalysisFunction= {
@@ -65,7 +66,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
 
     return (
         <div>
-            <DropdownButton key={props.name} title={props.name}>
+            <DropdownButton key={props.name} title={props.name} disabled={!props.isEnabled}>
                 {props.functions.map(fn => {
                     return <Dropdown.Item key={fn.name} onClick={() => handleShow(fn)}>{fn.name}</Dropdown.Item>;
                 })}

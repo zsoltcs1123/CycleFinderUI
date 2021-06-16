@@ -9,8 +9,10 @@ import PropTypes from 'prop-types';
 import { ChartContextState } from '../types/ChartContextState';
 
 const contextDefaultValues: ChartContextState = {
+    symbol: "",
+    setSymbol: () => {/* initialize */},
     chartTools: [],
-    addChartTool: () => { /*initialize*/ }
+    addChartTool: () => { /*initialize */ }
 };
 
 export const ChartContext = React.createContext<ChartContextState>(
@@ -18,7 +20,12 @@ export const ChartContext = React.createContext<ChartContextState>(
 );
 
 const ChartProvider: React.FC = ({ children }) => {
+    const [symbol, setCurrentSymbol] = React.useState<string>("");
     const [chartTools, setChartTools] = React.useState<IChartTool[]>([]);
+
+    const setSymbol = (symbol: string) => {
+        setCurrentSymbol(symbol);
+    }
 
     const addChartTool = (tool: IChartTool) => {
         if (chartTools.some(t => t.id == tool.id)){
@@ -31,6 +38,8 @@ const ChartProvider: React.FC = ({ children }) => {
     return (
         <ChartContext.Provider
             value={{
+                symbol,
+                setSymbol,
                 chartTools,
                 addChartTool
             }}

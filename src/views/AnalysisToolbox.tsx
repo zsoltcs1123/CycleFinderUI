@@ -5,13 +5,17 @@
 import * as React from 'react';
 import { css, jsx } from '@emotion/react'
 import AnalysisModule from './AnalysisModule';
+import { ChartContext } from '../context/ChartProvider';
 
-export default function AnalysisToolbox(){
+export default function AnalysisToolbox() {
+    const { symbol } = React.useContext(ChartContext);
+
     return (
         <div>
-            <AnalysisModule 
-                name = "W24"
-                functions = {[{name: "Add W24 levels...", url: "", parameters: [{id: "Octave:", value: "10"}]}]}
+            <AnalysisModule
+                name="W24"
+                functions={[{ name: "Add W24 levels...", url: "", parameters: [{ id: "Octave:", value: "10" }] }]}
+                isEnabled={symbol != ""}
             />
         </div>
     );

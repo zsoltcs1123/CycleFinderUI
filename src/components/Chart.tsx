@@ -10,10 +10,6 @@ import { css, jsx } from '@emotion/react'
 import { ChartContext } from '../context/ChartProvider';
 import IChartTool from '../types/IChartTool';
 
-interface IChartProps {
-  symbol: string;
-}
-
 const override = css` 
   display: block;
   margin: 0 auto;
@@ -52,9 +48,10 @@ chart.applyOptions({
 
 const candleSeries = chart.addCandlestickSeries();
 
-export default function Chart(props: IChartProps) {
+export default function Chart() {
 
   const { chartTools } = React.useContext(ChartContext);
+  const { symbol } = React.useContext(ChartContext);
 
   const [data, setData]: [BarData[], (data: BarData[]) => void] = React.useState(defaultData);
   const [currentTools, setCurrentTools]: [IChartTool[], (activeTools: IChartTool[]) => void] = React.useState([] as IChartTool[])
@@ -67,7 +64,7 @@ export default function Chart(props: IChartProps) {
 
     axios
 
-      .get<BarData[]>(`https://localhost:5001/api/CandleStick/GetAllData?symbol=${props.symbol}&timeFrame=1d`, {
+      .get<BarData[]>(`https://localhost:5001/api/CandleStick/GetAllData?symbol=${symbol}&timeFrame=1d`, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -79,7 +76,7 @@ export default function Chart(props: IChartProps) {
 
         chart.applyOptions({
           watermark: {
-            text: props.symbol,
+            text: symbol,
           },
         });
 
@@ -95,7 +92,7 @@ export default function Chart(props: IChartProps) {
         }
         setLoading(false);
       });
-  }, [props.symbol]);
+  }, [symbol]);
 
   React.useEffect(() => {
     chartTools.forEach((tool: IChartTool) => {
@@ -106,7 +103,7 @@ export default function Chart(props: IChartProps) {
 
       setCurrentTools(chartTools)
     })
-  }, [JSON.stringify(chartTools)]) //TODO this works but is not optimal. But without the hashing react won't pick up array changes for some reason.
+  }, [JSON.stringify(chartTools)]) //TODO this works but is not optimal. But without the hashing react won't pick up array changes for some reason...
 
   return <div>
     {isLoading
