@@ -3,10 +3,10 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import { ChartContextState } from '../types/ChartContextState';
 import IChartTool from '../types/IChartTool';
 import { css, jsx } from '@emotion/react'
 import PropTypes from 'prop-types';
+import { ChartContextState } from '../types/ChartContextState';
 
 const contextDefaultValues: ChartContextState = {
     chartTools: [],
@@ -21,12 +21,11 @@ const ChartProvider: React.FC = ({ children }) => {
     const [chartTools, setChartTools] = React.useState<IChartTool[]>([]);
 
     const addChartTool = (tool: IChartTool) => {
-        const newTool: IChartTool = {
-            id: tool.id,
-            isActive: tool.isActive
+        if (chartTools.some(t => t.id == tool.id)){
+            alert("This tool is already added");
+            return;
         }
-        setChartTools([...chartTools, newTool])
-        alert("Chart tool added");
+        setChartTools([...chartTools, tool])
     }
 
     return (

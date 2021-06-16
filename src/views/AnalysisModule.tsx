@@ -12,27 +12,19 @@ import { Col } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import { ChartContextState } from '../types/ChartContextState';
 import { ChartContext } from '../context/ChartProvider';
-
-interface IAnalysisFunctionParameter {
-    //Cannot use 'key', because it is a React internal name.
-    id: string,
-    value: string,
-}
-
-interface IAnalysisFunction {
-    name: string,
-    url: string,
-    parameters: IAnalysisFunctionParameter[]
-}
+import { IAnalysisFunction } from '../types/IAnalysisFunction';
 
 interface IAnalysisModuleProps {
     name: string,
     functions: IAnalysisFunction[]
 }
 
-const defaultParameters: IAnalysisFunctionParameter[] = [];
+const defaultFunction: IAnalysisFunction= {
+    name: "",
+    url: "",
+    parameters: []
+};
 
 export default function AnalysisModule(props: IAnalysisModuleProps) {
 
@@ -40,25 +32,35 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
 
     const [showParameters, setShowParameters] = React.useState(false);
 
-    const [currentParameters, setCurrentParameters]: [IAnalysisFunctionParameter[], (currentParameters: IAnalysisFunctionParameter[]) => void]
-         = React.useState(defaultParameters)
+    const [currentFunction, setCurrentFunction]: [IAnalysisFunction, (currentFunction: IAnalysisFunction) => void]
+         = React.useState(defaultFunction)
 
     const handleClose = () => {
         setShowParameters(false)
+    };
+
+    const handleSubmit = () => {
         addChartTool({
-            id: "w24",
+            id: currentFunction.name + JSON.stringify(currentFunction.parameters),
+            fn: currentFunction,
             isActive: true
           })
+        setShowParameters(false)
     };
 
     const handleShow = (fn: IAnalysisFunction) => {
-        setCurrentParameters(fn.parameters)
+        setCurrentFunction(fn)
         setShowParameters(true);
     }
 
     const onInput = (id: string, newValue: string) => {
-        const newParams = currentParameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
-        setCurrentParameters(newParams)
+        const newParams = currentFunction.parameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
+        const newFn : IAnalysisFunction = {
+            name: currentFunction.name,
+            url: currentFunction.url,
+            parameters: newParams
+        }
+        setCurrentFunction(newFn)
     }
 
     return (
@@ -74,7 +76,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
                     <Modal.Title>Parameters</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {currentParameters.map(param => {
+                    {currentFunction.parameters.map(param => {
                         return <Form.Group key={param.id} as={Row} controlId={param.id}>
                             <Form.Row>
                                 <Form.Label column sm={2}>
@@ -95,7 +97,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button variant="primary" onClick={handleSubmit}>
                         Submit
                     </Button>
                 </Modal.Footer>
