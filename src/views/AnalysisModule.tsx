@@ -12,6 +12,8 @@ import { Col } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import { ChartContextState } from '../types/ChartContextState';
+import { ChartContext } from '../context/ChartProvider';
 
 interface IAnalysisFunctionParameter {
     //Cannot use 'key', because it is a React internal name.
@@ -34,6 +36,8 @@ const defaultParameters: IAnalysisFunctionParameter[] = [];
 
 export default function AnalysisModule(props: IAnalysisModuleProps) {
 
+    const { addChartTool } = React.useContext(ChartContext);
+
     const [showParameters, setShowParameters] = React.useState(false);
 
     const [currentParameters, setCurrentParameters]: [IAnalysisFunctionParameter[], (currentParameters: IAnalysisFunctionParameter[]) => void]
@@ -41,7 +45,10 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
 
     const handleClose = () => {
         setShowParameters(false)
-        alert(JSON.stringify(currentParameters))
+        addChartTool({
+            id: "w24",
+            isActive: true
+          })
     };
 
     const handleShow = (fn: IAnalysisFunction) => {

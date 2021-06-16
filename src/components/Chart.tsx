@@ -38,7 +38,15 @@ chart.applyOptions({
   crosshair: {
       mode: 0,
   },
+  watermark: {
+    color: 'rgba(11, 94, 29, 0.4)',
+    visible: true,
+    fontSize: 24,
+    horzAlign: 'left',
+    vertAlign: 'bottom',
+  },
 });
+
 
 const candleSeries = chart.addCandlestickSeries();
 
@@ -63,6 +71,12 @@ export default function Chart(props: IChartProps){
           setData(response.data)
 
           candleSeries.setData(response.data)
+
+          chart.applyOptions({
+            watermark: {
+                text: props.symbol,
+            },
+        });
 
           setLoading(false);
         })
