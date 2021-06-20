@@ -8,6 +8,7 @@ import Chart from '../components/Chart';
 import { css, jsx } from '@emotion/react'
 import AnalysisToolbox from './AnalysisToolbox';
 import { ChartContext } from '../context/ChartProvider';
+import ChartTools from './ChartTools';
 
 
 export default function ChartArea() {
@@ -35,6 +36,7 @@ export default function ChartArea() {
         <AnalysisToolbox />
         <Chart />
       </div>
+      <ChartTools />
     </div>
   );
 }

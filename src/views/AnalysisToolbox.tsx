@@ -8,13 +8,13 @@ import AnalysisModule from './AnalysisModule';
 import { ChartContext } from '../context/ChartProvider';
 
 export default function AnalysisToolbox() {
-    const { symbol } = React.useContext(ChartContext);
+    const { symbol } = React.useContext(ChartContext); //TODO don't use symbol for this. UI might be still loading data when symbol is already clicked
 
     return (
         <div>
             <AnalysisModule
                 name="W24"
-                functions={[{ name: "Add W24 levels...", url: "", parameters: [{ id: "Octave:", value: "10" }] }]}
+                functions={[{ name: "W24 levels", url: "", parameters: [{ id: "Octave:", value: "10" }] }]}
                 isEnabled={symbol != ""}
             />
         </div>

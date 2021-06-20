@@ -68,7 +68,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
         <div>
             <DropdownButton key={props.name} title={props.name} disabled={!props.isEnabled}>
                 {props.functions.map(fn => {
-                    return <Dropdown.Item key={fn.name} onClick={() => handleShow(fn)}>{fn.name}</Dropdown.Item>;
+                    return <Dropdown.Item key={fn.name} onClick={() => handleShow(fn)}>{`Add ${fn.name}...`}</Dropdown.Item>;
                 })}
             </DropdownButton>
 
@@ -86,7 +86,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
                             </Form.Row>
                             <Col sm={10}>
                                 <Form.Control
-                                    type="text"
+                                    type="text" //TODO change to Range input
                                     placeholder={param.id} 
                                     defaultValue={param.value}
                                     onChange={e => onInput(param.id, e.target.value)} />
