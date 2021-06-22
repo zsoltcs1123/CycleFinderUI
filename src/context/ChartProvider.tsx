@@ -16,6 +16,7 @@ const contextDefaultValues: ChartContextState = {
     chartTools: [],
     addChartTool: () => { /*initialize */ },
     removeChartTool: () => { /*initialize */ },
+    updateChartTool: () => { /*initialize */ },
 
     barData: [],
     setBardata: () => { /*initialize */ },
@@ -46,6 +47,14 @@ const ChartProvider: React.FC = ({ children }) => {
         setChartTools(chartTools.filter(t => t.id != tool.id))
     }
 
+    const updateChartTool = (tool: IChartTool) => {
+        const newTools = chartTools.slice();
+        const index = newTools.findIndex(t => t.id == tool.id);
+        newTools.splice(index, 1);
+        newTools.push(tool);
+        setChartTools(newTools);
+    }
+
     const setBardata = (data: BarData[]) => {
         setData(data);
     }
@@ -58,6 +67,7 @@ const ChartProvider: React.FC = ({ children }) => {
                 chartTools,
                 addChartTool,
                 removeChartTool,
+                updateChartTool,
                 barData: data,
                 setBardata
             }}

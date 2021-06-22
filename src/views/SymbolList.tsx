@@ -40,7 +40,7 @@ export default function SymbolList(props: ISymbolListProps) {
           //data coming from api doesn't have a key attribute, which is required for ListViewRenderPropGeneric
           const dataWithKeys = response.data.map(symbol => {return {key: symbol.name, name: symbol.name, quoteAsset: symbol.quoteAsset} as ISymbol})
 
-          setSymbols(dataWithKeys.filter(symbol => symbol.name == "BTCUSDT"));
+          setSymbols(dataWithKeys.filter(symbol => symbol.name == "BTCUSDT" || symbol.name == "ETHUSDT"));
           setLoading(false);
         })
         .catch(ex => {

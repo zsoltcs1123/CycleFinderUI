@@ -5,12 +5,7 @@
 import * as React from 'react';
 import { css, jsx } from '@emotion/react'
 import IChartTool from '../types/IChartTool';
-import Accordion from 'react-bootstrap/Accordion'
-import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import { Col } from 'react-bootstrap';
-import { Row } from 'react-bootstrap';
 import { Close } from '@emotion-icons/material'
 import Table from 'react-bootstrap/Table'
 import { ChartContext } from '../context/ChartProvider';
@@ -20,9 +15,18 @@ interface IChartToolProps {
     tool: IChartTool
 }
 
+
+
 export default function ChartTool(props: IChartToolProps) {
 
+    const [checked, setChecked] = React.useState(true);
     const { removeChartTool } = React.useContext(ChartContext);
+    const { updateChartTool } = React.useContext(ChartContext);
+
+    function onChartToolStateChanged(e: React.ChangeEvent<HTMLInputElement>, tool: IChartTool){
+        setChecked(e.currentTarget.checked);
+        updateChartTool({id: tool.id, fn: tool.fn, isActive: e.currentTarget.checked});
+    }
 
     return <div
         css={css`
@@ -35,7 +39,7 @@ export default function ChartTool(props: IChartToolProps) {
             <tbody>
                 <tr>
                     <td>
-                        <input type="checkbox" />
+                        <input type="checkbox" checked={checked} onChange={e => onChartToolStateChanged(e, props.tool)} />
                     </td>
                     <td>
                         <details>

@@ -12,6 +12,9 @@ export default function AnalysisToolbox() {
     const { symbol } = React.useContext(ChartContext); //TODO don't use symbol for this. UI might be still loading data when symbol is already clicked
     const { barData} = React.useContext(ChartContext);
 
+    const calculateMaxValue = () => barData.length > 0 ? barData[barData.length -1].high * 3 : 1;
+    const calculateIncrement = () => barData.length > 0 ? barData[barData.length -1].high < 100000 ? 1000 : 100 : 1
+
     return (
         <div>
             <AnalysisModule
@@ -20,8 +23,8 @@ export default function AnalysisToolbox() {
                     id: "W24 levels", 
                     type: AnalysisType.W24_levels, 
                     parameters: [
-                        { id: "Increment", value: "1000" },
-                        { id: "MaxValue", value: "100000" }
+                        { id: "Increment", value: calculateIncrement().toString() },
+                        { id: "MaxValue", value: calculateMaxValue().toString() }
                     ] }]}
                 isEnabled={symbol != ""}
             />

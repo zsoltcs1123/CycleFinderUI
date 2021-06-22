@@ -8,6 +8,7 @@ export type ChartContextState = {
   chartTools: IChartTool[]
   addChartTool: (tool: IChartTool) => void
   removeChartTool: (tool: IChartTool) => void
+  updateChartTool: (tool: IChartTool) => void
 
   barData: BarData[]
   setBardata: (data: BarData[]) => void
