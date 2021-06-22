@@ -169,25 +169,33 @@ export default function Chart() {
 
   React.useEffect(() => {
     const newTool = chartTools.find(t => currentTools.findIndex(ct => ct.id == t.id) == -1);
-
-    if (newTool != undefined && newTool.fn.type == AnalysisType.W24_levels){
-      getStaticLevels(generateFullUrl(newTool.fn.type, newTool.fn.parameters), newTool.id)
-    }
+    handleNewTool(newTool);
 
     const oldTool = currentTools.find(t => chartTools.findIndex(ct => ct.id == t.id) == -1);
-
-    if (oldTool != undefined && oldTool.fn.type == AnalysisType.W24_levels){
-      const pLineMap = priceLinesMap;
-
-      const plines = pLineMap.get(oldTool.id) as IPriceLine[];
-      plines.forEach(pl => candleSeries.removePriceLine(pl))
-
-      pLineMap.delete(oldTool.id);
-      setPriceLinesMap(pLineMap);
-    }
+    handleOldTool(oldTool);
 
     setCurrentTools(chartTools)
   }, [chartTools]) 
+
+
+  function handleNewTool(tool: IChartTool | undefined){
+    if (tool != undefined && tool.fn.type == AnalysisType.W24_levels){
+      getStaticLevels(generateFullUrl(tool.fn.type, tool.fn.parameters), tool.id)
+    }
+  }
+
+  function handleOldTool(tool: IChartTool | undefined){
+    if (tool != undefined && tool.fn.type == AnalysisType.W24_levels){
+      const pLineMap = priceLinesMap;
+
+      const plines = pLineMap.get(tool.id) as IPriceLine[];
+      plines.forEach(pl => candleSeries.removePriceLine(pl))
+
+      pLineMap.delete(tool.id);
+      setPriceLinesMap(pLineMap);
+    }
+  }
+
 
   return <div>
     {isLoading
