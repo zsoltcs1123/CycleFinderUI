@@ -1,5 +1,12 @@
+export enum AnalysisType {
+    BarData,
+    W24_levels,
+    None, //Required for initialization
+}
+
 export interface IAnalysisFunction {
     id: string,
+    type: AnalysisType
     parameters: IAnalysisFunctionParameter[]
 }
 

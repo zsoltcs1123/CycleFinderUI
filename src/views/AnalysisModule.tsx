@@ -13,7 +13,7 @@ import { Row } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import { ChartContext } from '../context/ChartProvider';
-import { IAnalysisFunction } from '../types/IAnalysisFunction';
+import { AnalysisType, IAnalysisFunction } from '../types/IAnalysisFunction';
 
 interface IAnalysisModuleProps {
     name: string,
@@ -23,6 +23,7 @@ interface IAnalysisModuleProps {
 
 const defaultFunction: IAnalysisFunction= {
     id: "",
+    type: AnalysisType.None,
     parameters: []
 };
 
@@ -57,6 +58,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
         const newParams = currentFunction.parameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
         const newFn : IAnalysisFunction = {
             id: currentFunction.id,
+            type: currentFunction.type,
             parameters: newParams
         }
         setCurrentFunction(newFn)

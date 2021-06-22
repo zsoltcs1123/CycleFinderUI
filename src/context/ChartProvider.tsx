@@ -7,13 +7,18 @@ import IChartTool from '../types/IChartTool';
 import { css, jsx } from '@emotion/react'
 import PropTypes from 'prop-types';
 import { ChartContextState } from '../types/ChartContextState';
+import { BarData } from 'lightweight-charts';
 
 const contextDefaultValues: ChartContextState = {
     symbol: "",
     setSymbol: () => {/* initialize */},
+
     chartTools: [],
     addChartTool: () => { /*initialize */ },
-    removeChartTool: () => { /*initialize */ }
+    removeChartTool: () => { /*initialize */ },
+
+    barData: [],
+    setBardata: () => { /*initialize */ },
 };
 
 export const ChartContext = React.createContext<ChartContextState>(
@@ -23,6 +28,7 @@ export const ChartContext = React.createContext<ChartContextState>(
 const ChartProvider: React.FC = ({ children }) => {
     const [symbol, setCurrentSymbol] = React.useState<string>("");
     const [chartTools, setChartTools] = React.useState<IChartTool[]>([]);
+    const [data, setData] = React.useState<BarData[]>([]);
 
     const setSymbol = (symbol: string) => {
         setCurrentSymbol(symbol);
@@ -40,6 +46,10 @@ const ChartProvider: React.FC = ({ children }) => {
         setChartTools(chartTools.filter(t => t.id != tool.id))
     }
 
+    const setBardata = (data: BarData[]) => {
+        setData(data);
+    }
+
     return (
         <ChartContext.Provider
             value={{
@@ -47,7 +57,9 @@ const ChartProvider: React.FC = ({ children }) => {
                 setSymbol,
                 chartTools,
                 addChartTool,
-                removeChartTool
+                removeChartTool,
+                barData: data,
+                setBardata
             }}
         >
             {children}
