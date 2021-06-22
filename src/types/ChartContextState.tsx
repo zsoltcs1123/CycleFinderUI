@@ -6,4 +6,5 @@ export type ChartContextState = {
   setSymbol: (symbol: string) => void
   chartTools: IChartTool[]
   addChartTool: (tool: IChartTool) => void
+  removeChartTool: (tool: IChartTool) => void
 }

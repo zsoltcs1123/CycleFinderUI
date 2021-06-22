@@ -22,8 +22,7 @@ interface IAnalysisModuleProps {
 }
 
 const defaultFunction: IAnalysisFunction= {
-    name: "",
-    url: "",
+    id: "",
     parameters: []
 };
 
@@ -42,7 +41,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
 
     const handleSubmit = () => {
         addChartTool({
-            id: currentFunction.name + JSON.stringify(currentFunction.parameters),
+            id: currentFunction.id + JSON.stringify(currentFunction.parameters),
             fn: currentFunction,
             isActive: true
           })
@@ -57,8 +56,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
     const onInput = (id: string, newValue: string) => {
         const newParams = currentFunction.parameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
         const newFn : IAnalysisFunction = {
-            name: currentFunction.name,
-            url: currentFunction.url,
+            id: currentFunction.id,
             parameters: newParams
         }
         setCurrentFunction(newFn)
@@ -68,7 +66,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
         <div>
             <DropdownButton key={props.name} title={props.name} disabled={!props.isEnabled}>
                 {props.functions.map(fn => {
-                    return <Dropdown.Item key={fn.name} onClick={() => handleShow(fn)}>{`Add ${fn.name}...`}</Dropdown.Item>;
+                    return <Dropdown.Item key={fn.id} onClick={() => handleShow(fn)}>{`Add ${fn.id}...`}</Dropdown.Item>;
                 })}
             </DropdownButton>
 

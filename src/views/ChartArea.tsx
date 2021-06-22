@@ -14,6 +14,7 @@ import ChartTools from './ChartTools';
 export default function ChartArea() {
 
   const { setSymbol } = React.useContext(ChartContext);
+  const { chartTools } = React.useContext(ChartContext);
 
   function onSymbolClicked(key: string) {
     setSymbol(key)
@@ -36,7 +37,7 @@ export default function ChartArea() {
         <AnalysisToolbox />
         <Chart />
       </div>
-      <ChartTools />
+      <ChartTools chartTools={chartTools} />
     </div>
   );
 }

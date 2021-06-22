@@ -14,7 +14,7 @@ export default function AnalysisToolbox() {
         <div>
             <AnalysisModule
                 name="W24"
-                functions={[{ name: "W24 levels", url: "", parameters: [{ id: "Octave:", value: "10" }] }]}
+                functions={[{ id: "W24 levels", parameters: [{ id: "Octave:", value: "10" }] }]}
                 isEnabled={symbol != ""}
             />
         </div>

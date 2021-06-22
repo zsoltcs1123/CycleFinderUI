@@ -1,6 +1,5 @@
 export interface IAnalysisFunction {
-    name: string,
-    url: string,
+    id: string,
     parameters: IAnalysisFunctionParameter[]
 }
 

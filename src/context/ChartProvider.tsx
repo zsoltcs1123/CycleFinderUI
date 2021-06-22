@@ -12,7 +12,8 @@ const contextDefaultValues: ChartContextState = {
     symbol: "",
     setSymbol: () => {/* initialize */},
     chartTools: [],
-    addChartTool: () => { /*initialize */ }
+    addChartTool: () => { /*initialize */ },
+    removeChartTool: () => { /*initialize */ }
 };
 
 export const ChartContext = React.createContext<ChartContextState>(
@@ -32,7 +33,11 @@ const ChartProvider: React.FC = ({ children }) => {
             alert("This tool is already added");
             return;
         }
-        setChartTools([...chartTools, tool])
+        setChartTools(chartTools.concat(tool))
+    }
+
+    const removeChartTool = (tool: IChartTool) => {
+        setChartTools(chartTools.filter(t => t.id != tool.id))
     }
 
     return (
@@ -41,7 +46,8 @@ const ChartProvider: React.FC = ({ children }) => {
                 symbol,
                 setSymbol,
                 chartTools,
-                addChartTool
+                addChartTool,
+                removeChartTool
             }}
         >
             {children}

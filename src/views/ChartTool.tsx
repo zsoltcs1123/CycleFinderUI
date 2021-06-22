@@ -11,7 +11,9 @@ import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 import { Col } from 'react-bootstrap';
 import { Row } from 'react-bootstrap';
-import {Close} from '@emotion-icons/material'
+import { Close } from '@emotion-icons/material'
+import Table from 'react-bootstrap/Table'
+import { ChartContext } from '../context/ChartProvider';
 
 
 interface IChartToolProps {
@@ -20,44 +22,45 @@ interface IChartToolProps {
 
 export default function ChartTool(props: IChartToolProps) {
 
-    //TODO parameter display code is duplicated
+    const { removeChartTool } = React.useContext(ChartContext);
 
     return <div
         css={css`
-          display: flex;
-          flex-direction: row;
-          justify-content: left;
-        `}>
-        <Form>
-            <Form.Row>
-                <Form.Check type="checkbox" />
-                <Form.Label>
-                    <details>
-                        <summary>{props.tool.fn.name}</summary>
-                        <div>
-                            {props.tool.fn.parameters.map(param => {
-                                return <Form.Group key={param.id} as={Row} controlId={param.id}>
-                                    <Form.Row>
-                                        <Form.Label column="sm" lg={2}>
-                                            {param.id}
-                                        </Form.Label>
-                                    </Form.Row>
-                                    <Col xs="auto">
-                                        <Form.Control
-                                            size="sm"
-                                            type="text" //TODO change to Range input
-                                            placeholder={param.id}
-                                            defaultValue={param.value} />
-                                    </Col>
-                                </Form.Group>
-                            })}
-                        </div>
-                    </details>
-                </Form.Label>
-                <Button onClick={e => alert("shit happened")}>
-                    <Close size="24" />            
-                </Button>
-            </Form.Row>
-        </Form>
+                display: flex;
+                flex-direction: row;
+                justify-content: left;
+                align-items: top;
+                `}>
+        <Table size="sm">
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>
+                        <details>
+                            <summary>{props.tool.fn.id}</summary>
+                            <div>
+                                <Table size="sm">
+                                {props.tool.fn.parameters.map(param => {
+                                    return <tr key={param.id}>
+                                        <td>{param.id}</td>
+                                        <td>{param.value}</td>
+                                    </tr>
+                                })}
+                                </Table>
+                            </div>
+                        </details>
+                    </td>
+                    <td>
+                        <Button size="sm" onClick={e => removeChartTool(props.tool)}>
+                            <Close size="20" />
+                        </Button>
+                    </td>
+                </tr>
+            </tbody>
+        </Table>
     </div>
+
+
 }

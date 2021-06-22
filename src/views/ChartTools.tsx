@@ -6,12 +6,16 @@ import * as React from 'react';
 import { css, jsx } from '@emotion/react'
 import { ChartContext } from '../context/ChartProvider';
 import ChartTool from './ChartTool';
+import IChartTool from '../types/IChartTool';
 
-export default function ChartTools(){
-    const { chartTools } = React.useContext(ChartContext);
+interface IChartToolsProps{
+    chartTools: IChartTool[]
+}
+
+export default function ChartTools(props: IChartToolsProps){
 
     return <div>
-        {chartTools.map(tool => {
+        {props.chartTools.map(tool => {
             return <ChartTool key={tool.id} tool={tool} />
         } )}
     </div>
