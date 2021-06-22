@@ -47,10 +47,7 @@ chart.applyOptions({
   },
 });
 
-
 const candleSeries = chart.addCandlestickSeries();
-
-
 
 
 export default function Chart() {

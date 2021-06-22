@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import SymbolList from './SymbolList';
-import Chart from '../components/Chart';
+import Chart from './Chart';
 import { css, jsx } from '@emotion/react'
 import AnalysisToolbox from './AnalysisToolbox';
 import { ChartContext } from '../context/ChartProvider';
