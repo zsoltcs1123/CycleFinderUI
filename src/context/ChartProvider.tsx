@@ -3,11 +3,13 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import IChartTool from '../types/IChartTool';
+import IChartTool, { ChartTool } from '../types/IChartTool';
 import { css, jsx } from '@emotion/react'
 import PropTypes from 'prop-types';
 import { ChartContextState } from '../types/ChartContextState';
 import { BarData } from 'lightweight-charts';
+import { Increment, MaxValue } from '../api/ApiFunctions';
+import { calculateIncrement, calculateMaxValue } from '../utils/ChartUtils';
 
 const contextDefaultValues: ChartContextState = {
     symbol: "",
@@ -56,7 +58,14 @@ const ChartProvider: React.FC = ({ children }) => {
     }
 
     const setBardata = (data: BarData[]) => {
+        const updatedTools = chartTools.map(t => {
+            const params = t.fn.parameters.map(p => { 
+                return {id: p.id, value: (p.id == Increment ? calculateIncrement(data) : p.id == MaxValue ? calculateMaxValue(data) : p.value).toString()}
+            })
+            return new ChartTool({id: t.fn.id, type: t.fn.type, parameters: params}, t.isActive);
+        })
         setData(data);
+        setChartTools(updatedTools);
     }
 
     return (

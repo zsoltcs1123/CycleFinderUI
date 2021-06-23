@@ -9,7 +9,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'
 import { ChartContext } from '../context/ChartProvider';
 import IChartTool from '../types/IChartTool';
-import { generateFullUrl } from '../ApiFunctions';
+import { generateFullUrl } from '../api/ApiFunctions';
 import { AnalysisType } from '../types/IAnalysisFunction';
 
 const override = css` 
@@ -188,7 +188,7 @@ export default function Chart() {
 
 
   function handleNewTool(tool: IChartTool | undefined){
-    if (tool != undefined && tool.fn.type == AnalysisType.W24_levels){
+    if (tool != undefined && tool.isActive && tool.fn.type == AnalysisType.W24_levels){
       getStaticLevels(generateFullUrl(tool.fn.type, tool.fn.parameters), tool.id)
     }
   }

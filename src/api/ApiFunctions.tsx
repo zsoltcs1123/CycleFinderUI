@@ -1,4 +1,4 @@
-import { AnalysisType, IAnalysisFunctionParameter } from "./types/IAnalysisFunction";
+import { AnalysisType, IAnalysisFunctionParameter } from "../types/IAnalysisFunction";
 
 export const generateParameters = (url: string, params: IAnalysisFunctionParameter[]): string =>
     params.length > 0 ? `${url}?${params.map(p => `${p.id}=${p.value}&`).join('')}`.slice(0, -1) : url;
@@ -13,3 +13,6 @@ const ApiFunctions: Map<AnalysisType, string> = new Map<AnalysisType, string>([
     [AnalysisType.BarData, "https://localhost:5001/api/CandleStick/GetAllData"],
     [AnalysisType.W24_levels, "https://localhost:5001/api/PriceLevels/GetW24PriceLevels"]
 ])
+
+export const Increment = "Increment"
+export const MaxValue = "MaxValue"

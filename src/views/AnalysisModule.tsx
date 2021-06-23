@@ -14,6 +14,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import { ChartContext } from '../context/ChartProvider';
 import { AnalysisType, IAnalysisFunction } from '../types/IAnalysisFunction';
+import { ChartTool } from '../types/IChartTool';
 
 interface IAnalysisModuleProps {
     name: string,
@@ -41,11 +42,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
     };
 
     const handleSubmit = () => {
-        addChartTool({
-            id: currentFunction.id + JSON.stringify(currentFunction.parameters),
-            fn: currentFunction,
-            isActive: true
-          })
+        addChartTool(new ChartTool(currentFunction, true));
         setShowParameters(false)
     };
 
