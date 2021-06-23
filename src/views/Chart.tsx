@@ -175,11 +175,11 @@ export default function Chart() {
   }, [symbol]);
 
   React.useEffect(() => {
-    const newTool = chartTools.find(t => currentTools.findIndex(ct => ct.id == t.id) == -1);
-    handleNewTool(newTool);
+    const newTools = chartTools.filter(t => currentTools.findIndex(ct => ct.id == t.id) == -1);
+    newTools.forEach(handleNewTool)
 
-    const oldTool = currentTools.find(t => chartTools.findIndex(ct => ct.id == t.id) == -1);
-    handleOldTool(oldTool);
+    const oldTools = currentTools.filter(t => chartTools.findIndex(ct => ct.id == t.id) == -1);
+    oldTools.forEach(handleOldTool)
 
     handleActiveStatusChanged();
 

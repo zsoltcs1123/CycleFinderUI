@@ -38,7 +38,7 @@ const ChartProvider: React.FC = ({ children }) => {
     }
 
     const addChartTool = (tool: IChartTool) => {
-        if (chartTools.some(t => t.id == tool.id)){
+        if (chartTools.some(t => t.fn.type == tool.fn.type)){
             alert("This tool is already added");
             return;
         }

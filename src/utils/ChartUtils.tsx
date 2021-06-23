@@ -1,6 +1,6 @@
 import { BarData } from "lightweight-charts";
 
-export const calculateMaxValue = (barData: BarData[]) : number => barData.length > 0 ? barData[barData.length -1].high * 3 : 1;
+export const calculateMaxValue = (barData: BarData[]) : number => barData.length > 0 ? barData[barData.length -1].high * 3: 1;
 
 export const calculateIncrement = (barData: BarData[]) : number => {
     if (barData.length < 1) return 0;

@@ -28,6 +28,9 @@ export default function SymbolList(props: ISymbolListProps) {
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const [error, setError]: [string, (error: string) => void] = React.useState("");
 
+    //TODO dev purposes only
+    const filter = (symbol: ISymbol) => symbol.name == "BTCUSDT" || symbol.name == "ETHUSDT";
+
     React.useEffect(() => {
         axios
         
@@ -40,7 +43,7 @@ export default function SymbolList(props: ISymbolListProps) {
           //data coming from api doesn't have a key attribute, which is required for ListViewRenderPropGeneric
           const dataWithKeys = response.data.map(symbol => {return {key: symbol.name, name: symbol.name, quoteAsset: symbol.quoteAsset} as ISymbol})
 
-          setSymbols(dataWithKeys.filter(symbol => symbol.name == "BTCUSDT" || symbol.name == "ETHUSDT"));
+          setSymbols(dataWithKeys.filter(filter));
           setLoading(false);
         })
         .catch(ex => {
