@@ -28,7 +28,8 @@ const chartProterties = {
   }
 }
 
-const defaultPriceLinesMap: Map<string, [IPriceLine[], PriceLineOptions[]]> = new Map<string, [IPriceLine[], PriceLineOptions[]]>();
+const defaultPriceLinesMap: Map<string, [IPriceLine[], PriceLineOptions[]]> = new Map();
+const defaultMarkersMap: Map<IChartTool, SeriesMarker<Time>[]> = new Map();
 
 const chartDiv = document.createElement('div')
 chartDiv.setAttribute("id", 'tvchart')
@@ -57,9 +58,15 @@ export default function Chart() {
   const { symbol } = React.useContext(ChartContext);
   const { setBardata } = React.useContext(ChartContext);
 
-  const [priceLinesMap, setPriceLinesMap]: 
-    [Map<string, [IPriceLine[], PriceLineOptions[]]>, (priceLinesMap: Map<string, [IPriceLine[], PriceLineOptions[]]>) => void] 
-      = React.useState(defaultPriceLinesMap);
+  const [priceLinesMap, setPriceLinesMap]:
+    [Map<string, [IPriceLine[], PriceLineOptions[]]>, (priceLinesMap: Map<string, [IPriceLine[], PriceLineOptions[]]>) => void]
+    = React.useState(defaultPriceLinesMap);
+
+  const [markersMap, setMarkersMap]:
+    [Map<IChartTool, SeriesMarker<Time>[]>, (markersMap: Map<IChartTool, SeriesMarker<Time>[]>) => void]
+    = React.useState(defaultMarkersMap);
+
+
 
   const [currentTools, setCurrentTools]: [IChartTool[], (activeTools: IChartTool[]) => void] = React.useState([] as IChartTool[])
 
@@ -67,11 +74,11 @@ export default function Chart() {
   const [isLoading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
 
   //TODO refactor api calls into a hook
-  function getAllData(url: string){
+  function getAllData(url: string) {
     setLoading(true);
-  
+
     axios
-  
+
       .get<BarData[]>(url, {
         headers: {
           "Content-Type": "application/json"
@@ -79,15 +86,15 @@ export default function Chart() {
       })
       .then(response => {
         setBardata(response.data)
-  
+
         candleSeries.setData(response.data)
-  
+
         chart.applyOptions({
           watermark: {
             text: symbol,
           },
         });
-  
+
         setLoading(false);
       })
       .catch(ex => {
@@ -102,11 +109,11 @@ export default function Chart() {
       });
   }
 
-  function getStaticLevels(url: string, toolId: string){
+  function getStaticLevels(url: string, toolId: string) {
     setLoading(true);
-  
+
     axios
-  
+
       .get<PriceLineOptions[]>(url, {
         headers: {
           "Content-Type": "application/json"
@@ -115,7 +122,7 @@ export default function Chart() {
       .then(response => {
 
         generatePriceLines(toolId, response.data)
-    
+
         setLoading(false);
       })
       .catch(ex => {
@@ -127,14 +134,14 @@ export default function Chart() {
           // anything else
         }
         setLoading(false);
-      });    
+      });
   }
 
-  function getMarkers(url: string){
+  function getMarkers(url: string, tool: IChartTool) {
     setLoading(true);
-  
+
     axios
-  
+
       .get<ICandleMarker[]>(url, {
         headers: {
           "Content-Type": "application/json"
@@ -142,17 +149,20 @@ export default function Chart() {
       })
       .then(response => {
 
-        const markers : SeriesMarker<Time>[]  = response.data.filter(l => !l.isInTheFuture).map(d => {
+        const markers: SeriesMarker<Time>[] = response.data.filter(l => !l.isInTheFuture).map(d => {
           return {
-              time: d.time as UTCTimestamp,
-              position: d.position as SeriesMarkerPosition,
-              color: d.color,
-              shape: d.shape as SeriesMarkerShape,
-              text: d.text,
+            time: d.time as UTCTimestamp,
+            position: d.position as SeriesMarkerPosition,
+            color: d.color,
+            shape: d.shape as SeriesMarkerShape,
+            text: d.text,
           }
-      });
+        });
 
-        candleSeries.setMarkers(markers)
+        const mMap = markersMap;
+        mMap.set(tool, markers);
+        setMarkersMap(mMap);
+        applyMarkers();
 
         setLoading(false);
       })
@@ -168,24 +178,39 @@ export default function Chart() {
       });
   }
 
-  function generatePriceLines(toolId: string, plos: PriceLineOptions[]){
+  function applyMarkers() {
+    candleSeries.setMarkers([]);
+
+    const markers: SeriesMarker<Time>[] = [];
+
+    for (const [k, v] of markersMap) {
+      if (k.isActive) {
+        markers.push(...v);
+      }
+    }
+
+    markers.sort((m1, m2) => (m1.time > m2.time) ? 1 : -1)
+    candleSeries.setMarkers(markers);
+  }
+
+  function generatePriceLines(toolId: string, plos: PriceLineOptions[]) {
     const priceLines = [];
     const pLineMap = priceLinesMap;
 
     for (let i = 0; i < plos.length; i++) {
       const line =
         candleSeries.createPriceLine({
-            price: plos[i].price,
-            color: plos[i].color,
-            lineWidth: plos[i].lineWidth,
-            lineStyle: LineStyle.Dashed,
-            axisLabelVisible: true,
-            title: ""
+          price: plos[i].price,
+          color: plos[i].color,
+          lineWidth: plos[i].lineWidth,
+          lineStyle: LineStyle.Dashed,
+          axisLabelVisible: true,
+          title: ""
         });
-        priceLines.push(line);
+      priceLines.push(line);
     }
 
-    if (pLineMap.has(toolId)){
+    if (pLineMap.has(toolId)) {
       pLineMap.delete(toolId);
     }
 
@@ -201,8 +226,8 @@ export default function Chart() {
     }
 
     getAllData(generateFullUrl(AnalysisType.BarData, [
-      {id: 'symbol', value: symbol},
-      {id: 'timeFrame', value: "1d"},
+      { id: 'symbol', value: symbol },
+      { id: 'timeFrame', value: "1d" },
     ]))
 
   }, [symbol]);
@@ -217,63 +242,78 @@ export default function Chart() {
     handleActiveStatusChanged();
 
     setCurrentTools(chartTools)
-  }, [chartTools]) 
+  }, [chartTools])
 
 
-  function handleNewTool(tool: IChartTool | undefined){
-    if (tool != undefined && tool.isActive){
-      if (tool.fn.type == AnalysisType.W24_levels){
+  function handleNewTool(tool: IChartTool | undefined) {
+    if (tool != undefined && tool.isActive) {
+      if (tool.fn.type == AnalysisType.W24_levels) {
         getStaticLevels(generateFullUrl(tool.fn.type, tool.fn.parameters), tool.id)
       }
-      if (tool.fn.type == AnalysisType.Retrogrades){
-        getMarkers(generateFullUrl(tool.fn.type, tool.fn.parameters))
+      if (tool.fn.type == AnalysisType.Retrogrades) {
+        getMarkers(generateFullUrl(tool.fn.type, tool.fn.parameters), tool)
       }
     }
   }
 
-  function handleOldTool(tool: IChartTool | undefined){
-    if (tool != undefined){
-      if (tool.fn.type == AnalysisType.W24_levels){
+  function handleOldTool(tool: IChartTool | undefined) {
+    if (tool != undefined) {
+      if (tool.fn.type == AnalysisType.W24_levels) {
         const pLineMap = priceLinesMap;
 
         const plines = (pLineMap.get(tool.id) as [IPriceLine[], PriceLineOptions[]])[0];
         plines.forEach(pl => candleSeries.removePriceLine(pl))
-  
+
         pLineMap.delete(tool.id);
         setPriceLinesMap(pLineMap);
       }
 
-      if (tool.fn.type == AnalysisType.Retrogrades){
-        // handle markers deletion
+      if (tool.fn.type == AnalysisType.Retrogrades) {
+        const mMap = markersMap;
+
+        for (const k of mMap.keys()) {
+          if (k.id == tool.id)
+            mMap.delete(k);
+        }
+
+        setMarkersMap(mMap);
+        applyMarkers();
       }
     }
   }
 
-  function handleActiveStatusChanged(){
+  function handleActiveStatusChanged() {
     const updatedTool = chartTools.find(t => currentTools.find(ct => ct.id == t.id && ct.isActive != t.isActive));
 
-    if (updatedTool != undefined){
-      if (updatedTool.fn.type == AnalysisType.W24_levels){
+    if (updatedTool != undefined) {
+      if (updatedTool.fn.type == AnalysisType.W24_levels) {
         const plines = (priceLinesMap.get(updatedTool.id) as [IPriceLine[], PriceLineOptions[]]);
 
-        if (!updatedTool.isActive){
+        if (!updatedTool.isActive) {
           plines[0].forEach(pl => candleSeries.removePriceLine(pl))
         }
-        else{
+        else {
           generatePriceLines(updatedTool.id, plines[1]);
         }
       }
 
-      if (updatedTool.fn.type == AnalysisType.Retrogrades){
-        // handle markers change
+      if (updatedTool.fn.type == AnalysisType.Retrogrades) {
+        const mMap = markersMap;
+        for (const [k, v] of mMap) {
+          if (k.id == updatedTool.id) {
+            k.isActive = updatedTool.isActive;
+          }
+        }
+        setMarkersMap(mMap);
+        applyMarkers();
       }
     }
   }
 
 
-  return <div>
-    {isLoading
-      ? <ClipLoader loading={isLoading} css={override} size={300} />
-      : <div ref={(nodeElement) => { nodeElement && nodeElement.appendChild(chartDiv) }} />}
-  </div>
-}
+    return <div>
+      {isLoading
+        ? <ClipLoader loading={isLoading} css={override} size={300} />
+        : <div ref={(nodeElement) => { nodeElement && nodeElement.appendChild(chartDiv) }} />}
+    </div>
+  }

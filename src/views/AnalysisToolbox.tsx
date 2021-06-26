@@ -7,8 +7,8 @@ import { css, jsx } from '@emotion/react'
 import AnalysisModule from './AnalysisModule';
 import { ChartContext } from '../context/ChartProvider';
 import { AnalysisType } from '../types/IAnalysisFunction';
-import { calculateIncrement, calculateMaxValue } from '../utils/ChartUtils';
-import { Increment, MaxValue, Planet } from '../api/ApiFunctions';
+import { calculateFirstTimeStamp, calculateIncrement, calculateMaxValue } from '../utils/ChartUtils';
+import { Filter, From, Increment, MaxValue, Planet } from '../api/ApiFunctions';
 
 export default function AnalysisToolbox() {
     const { symbol } = React.useContext(ChartContext); //TODO don't use symbol for this. UI might be still loading data when symbol is already clicked
@@ -40,6 +40,8 @@ export default function AnalysisToolbox() {
                     type: AnalysisType.Retrogrades, 
                     parameters: [
                         { id: Planet, value: "" },
+                        { id: From, value: calculateFirstTimeStamp(barData).toString() },
+                        { id: Filter, value: (true).toString() },
                     ] }]}
                 isEnabled={symbol != ""}
             />

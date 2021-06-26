@@ -1,4 +1,4 @@
-import { BarData } from "lightweight-charts";
+import { BarData, Time } from "lightweight-charts";
 
 export const calculateMaxValue = (barData: BarData[]) : number => barData.length > 0 ? barData[barData.length -1].high * 3: 1;
 
@@ -22,3 +22,5 @@ export const calculateIncrement = (barData: BarData[]) : number => {
 
     else return 0;
 }
+
+export const calculateFirstTimeStamp = (barData: BarData[]): Time => barData.length > 0 ? barData[0].time : 0 as Time;

@@ -18,3 +18,5 @@ const ApiFunctions: Map<AnalysisType, string> = new Map<AnalysisType, string>([
 export const Increment = "Increment"
 export const MaxValue = "MaxValue"
 export const Planet = "Planet"
+export const From = "From"
+export const Filter = "Filter"
