@@ -10,6 +10,7 @@ import { ChartContextState } from '../types/ChartContextState';
 import { BarData } from 'lightweight-charts';
 import { Increment, MaxValue } from '../api/ApiFunctions';
 import { calculateIncrement, calculateMaxValue } from '../utils/ChartUtils';
+import { AnalysisType } from '../types/IAnalysisFunction';
 
 const contextDefaultValues: ChartContextState = {
     symbol: "",
@@ -38,8 +39,12 @@ const ChartProvider: React.FC = ({ children }) => {
     }
 
     const addChartTool = (tool: IChartTool) => {
-        if (chartTools.some(t => t.fn.type == tool.fn.type)){
+        if (chartTools.some(t => t.fn.type == tool.fn.type && t.fn.type == AnalysisType.W24_levels)){
             alert("This tool is already added");
+            return;
+        }
+        if (chartTools.some(t => t.id == tool.id)){
+            alert("Tool with the same id is already added");
             return;
         }
         setChartTools(chartTools.concat(tool))

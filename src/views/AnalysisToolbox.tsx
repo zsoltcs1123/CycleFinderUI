@@ -8,14 +8,20 @@ import AnalysisModule from './AnalysisModule';
 import { ChartContext } from '../context/ChartProvider';
 import { AnalysisType } from '../types/IAnalysisFunction';
 import { calculateIncrement, calculateMaxValue } from '../utils/ChartUtils';
-import { Increment, MaxValue } from '../api/ApiFunctions';
+import { Increment, MaxValue, Planet } from '../api/ApiFunctions';
 
 export default function AnalysisToolbox() {
     const { symbol } = React.useContext(ChartContext); //TODO don't use symbol for this. UI might be still loading data when symbol is already clicked
     const { barData} = React.useContext(ChartContext);
 
     return (
-        <div>
+        <div
+        css={css`
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: top;
+          `}>
             <AnalysisModule
                 name="W24"
                 functions={[{ 
@@ -24,6 +30,16 @@ export default function AnalysisToolbox() {
                     parameters: [
                         { id: Increment, value: calculateIncrement(barData).toString() },
                         { id: MaxValue, value: calculateMaxValue(barData).toString() }
+                    ] }]}
+                isEnabled={symbol != ""}
+            />
+            <AnalysisModule
+                name="Ephemeris"
+                functions={[{ 
+                    id: "Retrogrades", 
+                    type: AnalysisType.Retrogrades, 
+                    parameters: [
+                        { id: Planet, value: "" },
                     ] }]}
                 isEnabled={symbol != ""}
             />

@@ -11,8 +11,10 @@ export const generateFullUrl = (type: AnalysisType, params: IAnalysisFunctionPar
 
 const ApiFunctions: Map<AnalysisType, string> = new Map<AnalysisType, string>([
     [AnalysisType.BarData, "https://localhost:5001/api/CandleStick/GetAllData"],
-    [AnalysisType.W24_levels, "https://localhost:5001/api/PriceLevels/GetW24PriceLevels"]
+    [AnalysisType.W24_levels, "https://localhost:5001/api/PriceLevels/GetW24PriceLevels"],
+    [AnalysisType.Retrogrades, "https://localhost:5001/api/CandleStickMarker/GetRetrogrades"]
 ])
 
 export const Increment = "Increment"
 export const MaxValue = "MaxValue"
+export const Planet = "Planet"

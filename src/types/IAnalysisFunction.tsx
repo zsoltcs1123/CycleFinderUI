@@ -1,6 +1,8 @@
 export enum AnalysisType {
     BarData,
     W24_levels,
+    SQ9_levels,
+    Retrogrades,
     None, //Required for initialization
 }
 

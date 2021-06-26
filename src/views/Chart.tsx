@@ -3,7 +3,7 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import { createChart, BarData, PriceLineOptions, LineStyle, IPriceLine } from 'lightweight-charts';
+import { createChart, BarData, PriceLineOptions, LineStyle, IPriceLine, SeriesMarker, Time, UTCTimestamp, SeriesMarkerPosition, SeriesMarkerShape } from 'lightweight-charts';
 import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'
@@ -11,6 +11,7 @@ import { ChartContext } from '../context/ChartProvider';
 import IChartTool from '../types/IChartTool';
 import { generateFullUrl } from '../api/ApiFunctions';
 import { AnalysisType } from '../types/IAnalysisFunction';
+import ICandleMarker from '../types/ICandleMarker';
 
 const override = css` 
   display: block;
@@ -114,13 +115,7 @@ export default function Chart() {
       .then(response => {
 
         generatePriceLines(toolId, response.data)
-  
-        chart.applyOptions({
-          watermark: {
-            text: symbol,
-          },
-        });
-  
+    
         setLoading(false);
       })
       .catch(ex => {
@@ -133,6 +128,44 @@ export default function Chart() {
         }
         setLoading(false);
       });    
+  }
+
+  function getMarkers(url: string){
+    setLoading(true);
+  
+    axios
+  
+      .get<ICandleMarker[]>(url, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+
+        const markers : SeriesMarker<Time>[]  = response.data.filter(l => !l.isInTheFuture).map(d => {
+          return {
+              time: d.time as UTCTimestamp,
+              position: d.position as SeriesMarkerPosition,
+              color: d.color,
+              shape: d.shape as SeriesMarkerShape,
+              text: d.text,
+          }
+      });
+
+        candleSeries.setMarkers(markers)
+
+        setLoading(false);
+      })
+      .catch(ex => {
+        if (ex.response) {
+          // client received an error response (5xx, 4xx)
+        } else if (ex.request) {
+          // client never received a response, or request never left
+        } else {
+          // anything else
+        }
+        setLoading(false);
+      });
   }
 
   function generatePriceLines(toolId: string, plos: PriceLineOptions[]){
@@ -188,34 +221,51 @@ export default function Chart() {
 
 
   function handleNewTool(tool: IChartTool | undefined){
-    if (tool != undefined && tool.isActive && tool.fn.type == AnalysisType.W24_levels){
-      getStaticLevels(generateFullUrl(tool.fn.type, tool.fn.parameters), tool.id)
+    if (tool != undefined && tool.isActive){
+      if (tool.fn.type == AnalysisType.W24_levels){
+        getStaticLevels(generateFullUrl(tool.fn.type, tool.fn.parameters), tool.id)
+      }
+      if (tool.fn.type == AnalysisType.Retrogrades){
+        getMarkers(generateFullUrl(tool.fn.type, tool.fn.parameters))
+      }
     }
   }
 
   function handleOldTool(tool: IChartTool | undefined){
-    if (tool != undefined && tool.fn.type == AnalysisType.W24_levels){
-      const pLineMap = priceLinesMap;
+    if (tool != undefined){
+      if (tool.fn.type == AnalysisType.W24_levels){
+        const pLineMap = priceLinesMap;
 
-      const plines = (pLineMap.get(tool.id) as [IPriceLine[], PriceLineOptions[]])[0];
-      plines.forEach(pl => candleSeries.removePriceLine(pl))
+        const plines = (pLineMap.get(tool.id) as [IPriceLine[], PriceLineOptions[]])[0];
+        plines.forEach(pl => candleSeries.removePriceLine(pl))
+  
+        pLineMap.delete(tool.id);
+        setPriceLinesMap(pLineMap);
+      }
 
-      pLineMap.delete(tool.id);
-      setPriceLinesMap(pLineMap);
+      if (tool.fn.type == AnalysisType.Retrogrades){
+        // handle markers deletion
+      }
     }
   }
 
   function handleActiveStatusChanged(){
     const updatedTool = chartTools.find(t => currentTools.find(ct => ct.id == t.id && ct.isActive != t.isActive));
 
-    if (updatedTool != undefined && updatedTool.fn.type == AnalysisType.W24_levels){
-      const plines = (priceLinesMap.get(updatedTool.id) as [IPriceLine[], PriceLineOptions[]]);
+    if (updatedTool != undefined){
+      if (updatedTool.fn.type == AnalysisType.W24_levels){
+        const plines = (priceLinesMap.get(updatedTool.id) as [IPriceLine[], PriceLineOptions[]]);
 
-      if (!updatedTool.isActive){
-        plines[0].forEach(pl => candleSeries.removePriceLine(pl))
+        if (!updatedTool.isActive){
+          plines[0].forEach(pl => candleSeries.removePriceLine(pl))
+        }
+        else{
+          generatePriceLines(updatedTool.id, plines[1]);
+        }
       }
-      else{
-        generatePriceLines(updatedTool.id, plines[1]);
+
+      if (updatedTool.fn.type == AnalysisType.Retrogrades){
+        // handle markers change
       }
     }
   }
