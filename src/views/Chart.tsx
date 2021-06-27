@@ -3,7 +3,7 @@
 /** @jsx jsx */
 
 import * as React from 'react';
-import { createChart, BarData, PriceLineOptions, LineStyle, IPriceLine, SeriesMarker, Time, UTCTimestamp, SeriesMarkerPosition, SeriesMarkerShape } from 'lightweight-charts';
+import { createChart, BarData, PriceLineOptions, LineStyle, IPriceLine, SeriesMarker, Time, UTCTimestamp, SeriesMarkerPosition, SeriesMarkerShape, ISeriesApi } from 'lightweight-charts';
 import axios from 'axios';
 import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'
@@ -12,6 +12,7 @@ import IChartTool from '../types/IChartTool';
 import { generateFullUrl } from '../api/ApiFunctions';
 import { AnalysisType } from '../types/IAnalysisFunction';
 import ICandleMarker from '../types/ICandleMarker';
+import IPlanetaryLine from '../types/IPlanetaryLine';
 
 const override = css` 
   display: block;
@@ -30,6 +31,7 @@ const chartProterties = {
 
 const defaultPriceLinesMap: Map<string, [IPriceLine[], PriceLineOptions[]]> = new Map();
 const defaultMarkersMap: Map<IChartTool, SeriesMarker<Time>[]> = new Map();
+const defaultPlanetaryLinesMap: Map<IChartTool, [IPlanetaryLine, ISeriesApi<"Line">][]> = new Map();
 
 const chartDiv = document.createElement('div')
 chartDiv.setAttribute("id", 'tvchart')
@@ -66,6 +68,9 @@ export default function Chart() {
     [Map<IChartTool, SeriesMarker<Time>[]>, (markersMap: Map<IChartTool, SeriesMarker<Time>[]>) => void]
     = React.useState(defaultMarkersMap);
 
+  const [planetaryLinesMap, setPlanetaryLinesMap]:
+    [Map<IChartTool, [IPlanetaryLine, ISeriesApi<"Line">][]>, (planetaryLinesMap: Map<IChartTool, [IPlanetaryLine, ISeriesApi<"Line">][]>) => void]
+    = React.useState(defaultPlanetaryLinesMap);
 
 
   const [currentTools, setCurrentTools]: [IChartTool[], (activeTools: IChartTool[]) => void] = React.useState([] as IChartTool[])
@@ -218,6 +223,65 @@ export default function Chart() {
     setPriceLinesMap(pLineMap)
   }
 
+  function getPlanetaryLines(url: string, tool: IChartTool) {
+    setLoading(true);
+
+    axios
+
+      .get<IPlanetaryLine[]>(url, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+
+        const pMap = planetaryLinesMap;
+        const lines: [IPlanetaryLine, ISeriesApi<"Line">][] = []
+
+        response.data.forEach(line => {
+          const lineSeries = chart.addLineSeries({
+            color: line.color,
+            lineWidth: 2,
+            priceLineVisible: false
+          });
+          lines.push([line, lineSeries]);
+        })
+        
+
+        pMap.set(tool, lines);
+        setPlanetaryLinesMap(pMap);
+        applyPlanetaryLines();
+
+        setLoading(false);
+      })
+      .catch(ex => {
+        if (ex.response) {
+          // client received an error response (5xx, 4xx)
+        } else if (ex.request) {
+          // client never received a response, or request never left
+        } else {
+          // anything else
+        }
+        setLoading(false);
+      });
+  }
+
+  function applyPlanetaryLines() {
+
+    for (const [k, v] of planetaryLinesMap) {
+      if (k.isActive) {
+        v.forEach(line => {
+          line[1].setData(line[0].lineValues);
+        })
+      }
+      else{
+        v.forEach(line => {
+          line[1].setData([]);
+        })
+      }
+    }
+  }
+
   React.useEffect(() => {
 
     if (symbol == "") {
@@ -253,6 +317,9 @@ export default function Chart() {
       if (tool.fn.type == AnalysisType.Retrogrades) {
         getMarkers(generateFullUrl(tool.fn.type, tool.fn.parameters), tool)
       }
+      if (tool.fn.type == AnalysisType.W24_planetary_lines) {
+        getPlanetaryLines(generateFullUrl(tool.fn.type, tool.fn.parameters), tool)
+      }
     }
   }
 
@@ -278,6 +345,20 @@ export default function Chart() {
 
         setMarkersMap(mMap);
         applyMarkers();
+      }
+
+      if (tool.fn.type == AnalysisType.W24_planetary_lines) {
+        const pMap = planetaryLinesMap;
+
+        for (const [k, v] of pMap) {
+          if (k.id == tool.id){
+            v.forEach(line => {
+              chart.removeSeries(line[1]);
+            })
+            pMap.delete(k);
+          }
+        }
+        setPlanetaryLinesMap(pMap);
       }
     }
   }
@@ -307,13 +388,24 @@ export default function Chart() {
         setMarkersMap(mMap);
         applyMarkers();
       }
+
+      if (updatedTool.fn.type == AnalysisType.W24_planetary_lines) {
+        const pMap = planetaryLinesMap;
+        for (const [k, v] of pMap) {
+          if (k.id == updatedTool.id) {
+            k.isActive = updatedTool.isActive;
+          }
+        }
+        setPlanetaryLinesMap(pMap);
+        applyPlanetaryLines();
+      }
     }
   }
 
 
-    return <div>
-      {isLoading
-        ? <ClipLoader loading={isLoading} css={override} size={300} />
-        : <div ref={(nodeElement) => { nodeElement && nodeElement.appendChild(chartDiv) }} />}
-    </div>
-  }
+  return <div>
+    {isLoading
+      ? <ClipLoader loading={isLoading} css={override} size={300} />
+      : <div ref={(nodeElement) => { nodeElement && nodeElement.appendChild(chartDiv) }} />}
+  </div>
+}

@@ -12,7 +12,8 @@ export const generateFullUrl = (type: AnalysisType, params: IAnalysisFunctionPar
 const ApiFunctions: Map<AnalysisType, string> = new Map<AnalysisType, string>([
     [AnalysisType.BarData, "https://localhost:5001/api/CandleStick/GetAllData"],
     [AnalysisType.W24_levels, "https://localhost:5001/api/PriceLevels/GetW24PriceLevels"],
-    [AnalysisType.Retrogrades, "https://localhost:5001/api/CandleStickMarker/GetRetrogrades"]
+    [AnalysisType.Retrogrades, "https://localhost:5001/api/CandleStickMarker/GetRetrogrades"],
+    [AnalysisType.W24_planetary_lines, "https://localhost:5001/api/PlanetaryLines/GetPlanetaryLines"],
 ])
 
 export const Increment = "Increment"
@@ -20,5 +21,7 @@ export const MaxValue = "MaxValue"
 export const Planet = "Planet"
 export const From = "From"
 export const Filter = "Filter"
+export const CurrentPrice = "CurrentPrice"
+export const TimeFrame = "TimeFrame"
 
 export const Planets = ["me","ve","ma","ju","sa","ur","ne","pl",]

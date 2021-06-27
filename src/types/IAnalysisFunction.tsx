@@ -1,6 +1,7 @@
 export enum AnalysisType {
     BarData,
     W24_levels,
+    W24_planetary_lines,
     SQ9_levels,
     Retrogrades,
     None, //Required for initialization

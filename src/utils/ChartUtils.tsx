@@ -24,3 +24,5 @@ export const calculateIncrement = (barData: BarData[]) : number => {
 }
 
 export const calculateFirstTimeStamp = (barData: BarData[]): Time => barData.length > 0 ? barData[0].time : 0 as Time;
+
+export const calculateCurrentPrice = (barData: BarData[]): number =>  barData.length > 0 ? barData[barData.length -1].high : 0;
