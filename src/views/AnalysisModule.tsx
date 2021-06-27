@@ -15,6 +15,7 @@ import Button from 'react-bootstrap/Button'
 import { ChartContext } from '../context/ChartProvider';
 import { AnalysisType, IAnalysisFunction } from '../types/IAnalysisFunction';
 import { ChartTool } from '../types/IChartTool';
+import { Planet, Planets } from '../api/ApiFunctions';
 
 interface IAnalysisModuleProps {
     name: string,
@@ -22,7 +23,7 @@ interface IAnalysisModuleProps {
     isEnabled: boolean
 }
 
-const defaultFunction: IAnalysisFunction= {
+const defaultFunction: IAnalysisFunction = {
     id: "",
     type: AnalysisType.None,
     parameters: []
@@ -35,7 +36,7 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
     const [showParameters, setShowParameters] = React.useState(false);
 
     const [currentFunction, setCurrentFunction]: [IAnalysisFunction, (currentFunction: IAnalysisFunction) => void]
-         = React.useState(defaultFunction)
+        = React.useState(defaultFunction)
 
     const handleClose = () => {
         setShowParameters(false)
@@ -52,8 +53,8 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
     }
 
     const onInput = (id: string, newValue: string) => {
-        const newParams = currentFunction.parameters.map(param => param.id == id ? {id: param.id, value: newValue} : {id: param.id, value: param.value})
-        const newFn : IAnalysisFunction = {
+        const newParams = currentFunction.parameters.map(param => param.id == id ? { id: param.id, value: newValue } : { id: param.id, value: param.value })
+        const newFn: IAnalysisFunction = {
             id: currentFunction.id,
             type: currentFunction.type,
             parameters: newParams
@@ -82,11 +83,22 @@ export default function AnalysisModule(props: IAnalysisModuleProps) {
                                 </Form.Label>
                             </Form.Row>
                             <Col sm={10}>
-                                <Form.Control
-                                    type="text" //TODO change to Range input
-                                    placeholder={param.id} 
-                                    defaultValue={param.value}
-                                    onChange={e => onInput(param.id, e.target.value)} />
+                                {(() => {
+                                    switch (param.id) {
+                                        case Planet:
+                                            return <Form.Control 
+                                                as="select"
+                                                onChange={e => onInput(param.id, e.target.value)}> 
+                                                {Planets.map(p => <option key={p}>{p}</option>)}
+                                            </Form.Control>
+                                        default:
+                                            return <Form.Control
+                                                type="text" //TODO change to Range input
+                                                placeholder={param.id}
+                                                defaultValue={param.value}
+                                                onChange={e => onInput(param.id, e.target.value)} />
+                                    }
+                                })()}
                             </Col>
                         </Form.Group>
                     })}

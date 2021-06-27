@@ -20,3 +20,5 @@ export const MaxValue = "MaxValue"
 export const Planet = "Planet"
 export const From = "From"
 export const Filter = "Filter"
+
+export const Planets = ["me","ve","ma","ju","sa","ur","ne","pl",]
