@@ -59,6 +59,7 @@ const ChartProvider: React.FC = ({ children }) => {
         const index = newTools.findIndex(t => t.id == tool.id);
         newTools.splice(index, 1);
         newTools.push(tool);
+        newTools.sort((t1, t2) => (t1.timeStamp > t2.timeStamp) ? 1 : -1);
         setChartTools(newTools);
     }
 

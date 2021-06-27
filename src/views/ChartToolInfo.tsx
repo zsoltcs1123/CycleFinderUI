@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { css, jsx } from '@emotion/react'
-import IChartTool from '../types/IChartTool';
+import IChartTool, { ChartTool } from '../types/IChartTool';
 import Button from 'react-bootstrap/Button'
 import { Close } from '@emotion-icons/material'
 import Table from 'react-bootstrap/Table'
@@ -17,7 +17,7 @@ interface IChartToolProps {
 
 
 
-export default function ChartTool(props: IChartToolProps) {
+export default function ChartToolInfo(props: IChartToolProps) {
 
     const [checked, setChecked] = React.useState(true);
     const { removeChartTool } = React.useContext(ChartContext);
@@ -25,7 +25,7 @@ export default function ChartTool(props: IChartToolProps) {
 
     function onChartToolStateChanged(e: React.ChangeEvent<HTMLInputElement>, tool: IChartTool){
         setChecked(e.currentTarget.checked);
-        updateChartTool({id: tool.id, fn: tool.fn, isActive: e.currentTarget.checked});
+        updateChartTool(new ChartTool(tool.fn, e.currentTarget.checked, tool.timeStamp));
     }
 
     return <div
