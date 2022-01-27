@@ -8,7 +8,7 @@ export const calculateIncrement = (barData: BarData[]) : number => {
     const latest = barData[barData.length -1].high;
     const range = max - latest;
 
-    if (range < 100000 && range > 10000) return 1000;
+    if (range < 200000 && range > 10000) return 1000;
     else if (range < 10000 && range > 1000) return 100;
     else if (range < 1000 && range > 100) return 10;
     else if (range < 100 && range > 10) return 1;
