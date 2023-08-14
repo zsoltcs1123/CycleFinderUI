@@ -5,14 +5,10 @@
 import * as React from 'react';
 import axios from 'axios';
 import ListViewRenderPropGeneric from '../components/ListViewRenderPropGeneric';
-import ISymbol from '../types/ISymbol';
 import ClipLoader from "react-spinners/ClipLoader";
 import { css, jsx } from '@emotion/react'
+import IAspect from '../types/IAspect';
 
-
-interface ISymbolListProps{
-  onSymbolClicked: (symbol: string) => void
-}
 
 const override = css` 
   display: block;
@@ -20,30 +16,28 @@ const override = css`
   border-color: blue;
 `;
 
-const defaultSymbols:ISymbol[] = [];
+const defaultAspects:IAspect[] = [];
 
-export default function SymbolList(props: ISymbolListProps) {
+export default function AspectList() {
 
-    const [symbols, setSymbols]: [ISymbol[], (symbols: ISymbol[]) => void] = React.useState(defaultSymbols);
+    const [aspects, setAspects]: [IAspect[], (aspects: IAspect[]) => void] = React.useState(defaultAspects);
     const [loading, setLoading]: [boolean, (loading: boolean) => void] = React.useState<boolean>(true);
     const [error, setError]: [string, (error: string) => void] = React.useState("");
-
-    //TODO dev purposes only
-    const filter = (symbol: ISymbol) => symbol.name == "BTCUSDT" || symbol.name == "ETHUSDT";
 
     React.useEffect(() => {
         axios
         
-        .get<ISymbol[]>("https://localhost:5001/api/CandleStick/GetSymbols", {
+        .get<IAspect[]>("https://localhost:5001/api/AstroEvent/GetAspectsForPeriod?from=1640995261&to=1643673661", {
           headers: {
             "Content-Type": "application/json"
           }
         })
         .then(response => {
           //data coming from api doesn't have a key attribute, which is required for ListViewRenderPropGeneric
-          const dataWithKeys = response.data.map(symbol => {return {key: symbol.name, name: symbol.name, quoteAsset: symbol.quoteAsset} as ISymbol})
+          const dataWithKeys = response.data.map(aspect => {return {key: aspect.time, time: aspect.time, description: aspect.description} as IAspect})
 
-          setSymbols(dataWithKeys.filter(filter));
+          console.log(dataWithKeys);
+          setAspects(dataWithKeys);
           setLoading(false);
         })
         .catch(ex => {
@@ -61,11 +55,11 @@ export default function SymbolList(props: ISymbolListProps) {
 
     return (
         <div>
-            <h2>Binance Symbols</h2>
+            <h2>JANUARY ASPECTS</h2>
             <ClipLoader loading={loading} css={override}  size={150} />
             <ListViewRenderPropGeneric 
-              items={symbols}
-              renderer={(item) => <div>{item.name}</div>}
+              items={aspects}
+              renderer={(item) => <div>{item.time + "-" + item.description}</div>}
             /> 
         </div>
 

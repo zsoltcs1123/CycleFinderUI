@@ -14,7 +14,6 @@ export interface IAbstractItem {
 interface PropsType<T> {
     items: T[];
     renderer: (item: T) => React.ReactNode;
-    onItemClicked: (symbol: string) => void;
   }
 
   //TODO export default, extract interfaces to other files
@@ -27,7 +26,7 @@ interface PropsType<T> {
           -webkit-overflow-scrolling: touch;
       `}>
         {props.items.map((item) => {
-          return <ListGroup.Item key={item.key} action onClick={() => props.onItemClicked(item.key)}>{props.renderer(item)}</ListGroup.Item>;
+           <ListGroup.Item key={item.key}></ListGroup.Item>
         })}
       </ListGroup>
     );

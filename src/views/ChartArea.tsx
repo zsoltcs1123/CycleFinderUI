@@ -9,6 +9,7 @@ import { css, jsx } from '@emotion/react'
 import AnalysisToolbox from './AnalysisToolbox';
 import { ChartContext } from '../context/ChartProvider';
 import ChartTools from './ChartTools';
+import AspectList from './AspectList';
 
 
 export default function ChartArea() {
@@ -31,13 +32,8 @@ export default function ChartArea() {
       <div css={css`
             width: 200px;
           `}>
-        <SymbolList onSymbolClicked={onSymbolClicked} />
+        <AspectList/>
       </div>
-      <div>
-        <AnalysisToolbox />
-        <Chart />
-      </div>
-      <ChartTools chartTools={chartTools} />
     </div>
   );
 }
